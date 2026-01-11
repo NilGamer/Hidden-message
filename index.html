@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Hidden Message</title>
+
+<style>
+    body {
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: #f7f4ef;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    .message {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 32px;
+        font-weight: bold;
+        color: #d6336c;
+        z-index: 1;
+        text-align: center;
+    }
+
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+        touch-action: none;
+    }
+</style>
+</head>
+<body>
+
+<h1>There is a hidden message for you 💌</h1>
+
+<div class="container">
+    <div class="message">I Love You Vanshika ❤️</div>
+    <canvas id="scratchCanvas" width="300" height="300"></canvas>
+    <div class="message">From Your Pyara Bacha 😘</div>
+</div>
+
+<script>
+    const canvas = document.getElementById("scratchCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Draw heart shape
+    function drawHeart() {
+        ctx.fillStyle = "#f7a1c4"; // gold color
+        ctx.beginPath();
+        ctx.moveTo(150, 70);
+        ctx.bezierCurveTo(150, 20, 20, 20, 20, 100);
+        ctx.bezierCurveTo(20, 180, 150, 250, 150, 280);
+        ctx.bezierCurveTo(150, 250, 280, 180, 280, 100);
+        ctx.bezierCurveTo(280, 20, 150, 20, 150, 70);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    drawHeart();
+
+    let isScratching = false;
+
+    function scratch(x, y) {
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.beginPath();
+        ctx.arc(x, y, 18, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    canvas.addEventListener("mousedown", () => isScratching = true);
+    canvas.addEventListener("mouseup", () => isScratching = false);
+    canvas.addEventListener("mousemove", e => {
+        if (!isScratching) return;
+        scratch(e.offsetX, e.offsetY);
+    });
+
+    // Mobile support
+    canvas.addEventListener("touchstart", () => isScratching = true);
+    canvas.addEventListener("touchend", () => isScratching = false);
+    canvas.addEventListener("touchmove", e => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        scratch(touch.clientX - rect.left, touch.clientY - rect.top);
+    });
+</script>
+
+</body>
+</html>
